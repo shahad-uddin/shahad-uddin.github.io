@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Search, Globe, ArrowRight, Loader2, CheckCircle2, Shield, Settings, Lock } from 'lucide-react';
+import { Search, Globe, Loader2, CheckCircle2, Shield, Settings, Lock } from 'lucide-react';
 import { AFFILIATE_LINK } from '../constants';
 
 interface DomainCheckerProps {
@@ -18,19 +18,31 @@ const DomainChecker: React.FC<DomainCheckerProps> = ({ language }) => {
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!domain.trim()) return;
+    let searchTerm = domain.trim().toLowerCase();
+    if (!searchTerm) return;
+
+    // Clean the input: remove protocols, www, and special characters
+    searchTerm = searchTerm.replace(/^(https?:\/\/)?(www\.)?/, '').replace(/[^a-z0-9.-]/g, '');
+    
+    // Determine the full domain string
+    // If the user already typed a TLD that we support, use that, otherwise append selected TLD
+    const hasExistingTld = tlds.some(ext => searchTerm.endsWith(ext));
+    const fullDomain = hasExistingTld ? searchTerm : `${searchTerm}${tld}`;
 
     setIsSearching(true);
     setShowResult(false);
 
+    // Construct the affiliate URL with WHMCS parameters for direct domain registration search
+    const redirectUrl = `${AFFILIATE_LINK}&a=add&domain=register&query=${encodeURIComponent(fullDomain)}`;
+
+    // Simulate a brief "checking" period for better UX before redirecting
     setTimeout(() => {
       setIsSearching(false);
       setShowResult(true);
       
-      const fullDomain = `${domain.trim()}${tld}`;
-      const searchUrl = `${AFFILIATE_LINK}&a=add&domain=register&query=${fullDomain}`;
-      window.open(searchUrl, '_blank');
-    }, 1500);
+      // Redirect the user to the affiliate link
+      window.location.href = redirectUrl;
+    }, 1200);
   };
 
   return (
@@ -46,7 +58,7 @@ const DomainChecker: React.FC<DomainCheckerProps> = ({ language }) => {
               <input
                 type="text"
                 value={domain}
-                onChange={(e) => setDomain(e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toLowerCase())}
+                onChange={(e) => setDomain(e.target.value)}
                 placeholder={t("আপনার পছন্দের ডোমেইন নামটি লিখুন...", "Enter your desired domain name...")}
                 aria-label={t("ডোমেইন নাম লিখুন", "Type domain name")}
                 className="block w-full pl-12 pr-4 py-4 text-lg border-none rounded-2xl md:rounded-l-2xl focus:ring-2 focus:ring-blue-500 bg-gray-50/50"
@@ -123,9 +135,9 @@ const DomainChecker: React.FC<DomainCheckerProps> = ({ language }) => {
 
         {showResult && (
           <div className="mt-4 animate-fade-in text-center" aria-live="polite">
-            <div className="inline-flex items-center bg-green-50 text-green-700 px-6 py-2 rounded-full border border-green-100 shadow-sm">
+            <div className="inline-flex items-center bg-blue-50 text-blue-700 px-6 py-2 rounded-full border border-blue-100 shadow-sm">
               <CheckCircle2 className="w-5 h-5 mr-2" aria-hidden="true" />
-              <span className="font-medium">{t("অ্যাভেইলেবিলিটি চেক করা হচ্ছে... রিডাইরেক্ট করা হচ্ছে।", "Checking availability... Redirecting.")}</span>
+              <span className="font-medium italic">{t("অ্যাভেইলেবিলিটি চেক করা হচ্ছে... রিডাইরেক্ট করা হচ্ছে।", "Checking availability... Redirecting to Secure Panel.")}</span>
             </div>
           </div>
         )}

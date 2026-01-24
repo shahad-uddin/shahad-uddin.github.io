@@ -7,10 +7,10 @@ import DomainPricingTable from './components/DomainPricingTable';
 import DomainFAQ from './components/DomainFAQ';
 import ServiceCard from './components/ServiceCard';
 import ContentGuide from './components/ContentGuide';
-import AIAssistant from './components/AIAssistant';
 import Testimonials from './components/Testimonials';
 import BackToTop from './components/BackToTop';
 import Footer from './components/Footer';
+import CookieConsent from './components/CookieConsent';
 import { SERVICES_DATA, WHY_US_FEATURES, AFFILIATE_LINK, GUIDES_DATA, CATEGORICAL_SERVICES } from './constants';
 import { Shield, Zap, CreditCard, SearchX, ArrowRight } from 'lucide-react';
 
@@ -199,7 +199,7 @@ const App: React.FC = () => {
                    <div key={idx} className="text-center group cursor-default relative">
                       <div className="relative inline-flex items-center justify-center p-4 bg-white text-blue-600 rounded-2xl mb-6 shadow-sm transition-all duration-500 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white group-hover:shadow-xl">
                         {feature.icon}
-                        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 p-2 bg-gray-900 text-white text-[10px] leading-tight rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-xl z-20 text-center">
+                        <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-48 p-2 bg-gray-900 text-white text-[10px] leather-tight rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300 shadow-xl z-20 text-center">
                           {t(feature.description_bn, feature.description_en)}
                           <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-gray-900 rotate-45"></div>
                         </div>
@@ -286,8 +286,8 @@ const App: React.FC = () => {
       </main>
 
       <Footer language={language} />
-      <AIAssistant language={language} />
       <BackToTop />
+      <CookieConsent language={language} />
     </div>
   );
 };
